@@ -1,0 +1,14 @@
+{
+  "name": "filament-rich-media-plugins",
+  "version": "1.0.0",
+  "description": "Asset compiler for Filament Rich Media Plugins",
+  "main": "bin/build.js",
+  "scripts": {
+    "build": "node bin/build.js"
+  },
+  "devDependencies": {
+    "@tiptap/core": "^2.0.0",
+    "@tiptap/pm": "^2.0.0",
+    "esbuild": "^0.20.0"
+  }
+}
