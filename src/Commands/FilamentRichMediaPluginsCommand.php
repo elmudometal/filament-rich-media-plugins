@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace ElmudoDev\FilamentRichMediaPlugins\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class FilamentRichMediaPluginsCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'filament-rich-media-plugins';
 
     public $description = 'My command';
 

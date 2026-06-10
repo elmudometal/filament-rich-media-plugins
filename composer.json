@@ -1,17 +1,17 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "elmudo-dev/filament-rich-media-plugins",
+    "description": "A collection of standalone Filament rich editor plugins (LinkButton, Image) compatible with v4 and v5.",
     "keywords": [
-        ":vendor_name",
+        "elmudo-dev",
         "laravel",
-        ":package_slug"
+        "filament-rich-media-plugins"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/elmudometal/filament-rich-media-plugins",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "Hernan Soto",
+            "email": "guzman.hernan.j@gmail.com",
             "role": "Developer"
         }
     ],
@@ -35,13 +35,13 @@
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src/",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories/"
+            "ElmudoDev\\FilamentRichMediaPlugins\\": "src/",
+            "ElmudoDev\\FilamentRichMediaPlugins\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests/",
+            "ElmudoDev\\FilamentRichMediaPlugins\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/"
         }
     },
@@ -63,10 +63,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
+                "ElmudoDev\\FilamentRichMediaPlugins\\FilamentRichMediaPluginsServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\Facades\\Skeleton"
+                "FilamentRichMediaPlugins": "ElmudoDev\\FilamentRichMediaPlugins\\Facades\\FilamentRichMediaPlugins"
             }
         }
     },
