@@ -2,9 +2,9 @@
 
 namespace ElmudoDev\FilamentRichMediaPlugins\Tests;
 
+use ElmudoDev\FilamentRichMediaPlugins\FilamentRichMediaPluginsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use ElmudoDev\FilamentRichMediaPlugins\FilamentRichMediaPluginsServiceProvider;
 
 class TestCase extends Orchestra
 {

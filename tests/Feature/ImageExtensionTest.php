@@ -9,16 +9,16 @@ test('extension name is image', function () {
 });
 
 test('extension adds lazy and id attributes', function () {
-    $extension = new ImageExtension();
+    $extension = new ImageExtension;
     $attributes = $extension->addAttributes();
 
     expect($attributes)->toHaveKeys(['lazy', 'id']);
 });
 
 test('extension renderHTML outputs img tag', function () {
-    $extension = new ImageExtension();
+    $extension = new ImageExtension;
 
-    $node = new stdClass();
+    $node = new stdClass;
     $node->attrs = (object) [
         'src' => 'https://example.com/image.png',
         'alt' => 'Test image',

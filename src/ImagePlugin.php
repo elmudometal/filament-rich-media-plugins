@@ -38,7 +38,7 @@ class ImagePlugin implements RichContentPlugin
     public function getTipTapPhpExtensions(): array
     {
         return [
-            new ImageExtension(),
+            new ImageExtension,
         ];
     }
 

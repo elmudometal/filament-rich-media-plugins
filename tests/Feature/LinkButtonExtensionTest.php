@@ -9,7 +9,7 @@ test('extension name is linkButton', function () {
 });
 
 test('extension parseHTML specifies correct tag', function () {
-    $extension = new LinkButtonExtension();
+    $extension = new LinkButtonExtension;
     $parse = $extension->parseHTML();
 
     expect($parse)->toBeArray()
@@ -18,7 +18,7 @@ test('extension parseHTML specifies correct tag', function () {
 });
 
 test('extension adds expected attributes', function () {
-    $extension = new LinkButtonExtension();
+    $extension = new LinkButtonExtension;
     $attributes = $extension->addAttributes();
 
     expect($attributes)->toHaveKeys([
@@ -28,7 +28,7 @@ test('extension adds expected attributes', function () {
 });
 
 test('extension sanitizes disallowed URIs', function () {
-    $extension = new LinkButtonExtension();
+    $extension = new LinkButtonExtension;
 
     // Valid URIs
     expect($extension->isAllowedUri('https://example.com'))->toBeTrue()
@@ -40,10 +40,10 @@ test('extension sanitizes disallowed URIs', function () {
 });
 
 test('extension renderHTML applies classes and attributes correctly', function () {
-    $extension = new LinkButtonExtension();
+    $extension = new LinkButtonExtension;
 
     // Mock the TipTap mark object
-    $mark = new stdClass();
+    $mark = new stdClass;
     $mark->attrs = (object) [
         'href' => 'https://example.com',
         'target' => '_blank',
