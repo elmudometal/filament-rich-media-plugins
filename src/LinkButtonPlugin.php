@@ -22,6 +22,7 @@ use Filament\Schemas\Components\Utilities\Get;
 use Filament\Support\Enums\Width;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
 use Tiptap\Core\Extension;
 
@@ -97,9 +98,9 @@ class LinkButtonPlugin implements RichContentPlugin
                         'button_theme' => $arguments['dataButtonTheme'] ?? 'primary',
                     ];
                 })
-                ->schema($this->linkFormSchema())
+                ->schema(fn (RichEditor $component): array => $this->linkFormSchema($component))
                 ->action(function (array $arguments, array $data, RichEditor $component): void {
-                    $resolvedHref = $this->resolveHrefFromFormData($data);
+                    $resolvedHref = $this->resolveHrefFromFormData($data, $component);
 
                     $isSingleCharacterSelection = ($arguments['editorSelection']['head'] ?? null) === ($arguments['editorSelection']['anchor'] ?? null);
 
@@ -154,7 +155,7 @@ class LinkButtonPlugin implements RichContentPlugin
     /**
      * @return array<int, Component>
      */
-    protected function linkFormSchema(): array
+    protected function linkFormSchema(RichEditor $component): array
     {
         return [
             Grid::make(['md' => 3])
@@ -170,7 +171,7 @@ class LinkButtonPlugin implements RichContentPlugin
                         ->visible(fn (Get $get): bool => ! (bool) $get('type_input')),
                     FileUpload::make('href_file')
                         ->label(__('rich-media-plugins::link-button.fields.file'))
-                        ->disk((string) config('rich-media-link-button.disk', 'local'))
+                        ->disk($component->getFileAttachmentsDiskName())
                         ->directory((string) config('rich-media-link-button.directory', 'userfiles/files/'))
                         ->visibility('public')
                         ->downloadable()
@@ -232,7 +233,7 @@ class LinkButtonPlugin implements RichContentPlugin
     /**
      * @param  array<string, mixed>  $data
      */
-    protected function resolveHrefFromFormData(array $data): ?string
+    protected function resolveHrefFromFormData(array $data, RichEditor $component): ?string
     {
         if (! empty($data['type_input'])) {
             /** @var string|null $path */
@@ -241,7 +242,10 @@ class LinkButtonPlugin implements RichContentPlugin
                 return null;
             }
 
-            return Storage::disk((string) config('rich-media-link-button.disk', 'local'))->url($path);
+            /** @var FilesystemAdapter $storage */
+            $storage = Storage::disk($component->getFileAttachmentsDiskName());
+
+            return $storage->url($path);
         }
 
         /** @var string|null $href */

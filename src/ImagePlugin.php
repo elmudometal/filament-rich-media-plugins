@@ -20,6 +20,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Support\Enums\Width;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
@@ -82,15 +83,15 @@ class ImagePlugin implements RichContentPlugin
                     ? __('rich-media-plugins::image.heading.insert')
                     : __('rich-media-plugins::image.heading.update'))
                 ->modalWidth(Width::Medium)
-                ->fillForm(fn (array $arguments): array => [
-                    'src' => $this->getRelativePathFromUrl($arguments['src'] ?? null),
+                ->fillForm(fn (array $arguments, RichEditor $component): array => [
+                    'src' => $this->getRelativePathFromUrl($arguments['src'] ?? null, $component),
                     'alt' => $arguments['alt'] ?? '',
                     'width' => $arguments['width'] ?? '',
                     'height' => $arguments['height'] ?? '',
                     'lazy' => ! empty($arguments['lazy']),
                     'type' => $this->isImageSrc($arguments['src'] ?? null) ? 'image' : 'document',
                 ])
-                ->schema($this->imageFormSchema())
+                ->schema(fn (RichEditor $component): array => $this->imageFormSchema($component))
                 ->action(function (array $arguments, array $data, RichEditor $component): void {
                     $this->handleImageAction($arguments, $data, $component);
                 }),
@@ -100,7 +101,7 @@ class ImagePlugin implements RichContentPlugin
     /**
      * @return array<int, Component>
      */
-    protected function imageFormSchema(): array
+    protected function imageFormSchema(RichEditor $component): array
     {
         /** @var array<string> $acceptedFileTypes */
         $acceptedFileTypes = (array) config('rich-media-image.accepted_file_types', []);
@@ -111,7 +112,7 @@ class ImagePlugin implements RichContentPlugin
         return [
             FileUpload::make('src')
                 ->label(__('rich-media-plugins::image.fields.file'))
-                ->disk((string) config('rich-media-image.disk', 'public'))
+                ->disk($component->getFileAttachmentsDiskName())
                 ->directory((string) config('rich-media-image.directory', 'userfiles/media'))
                 ->visibility('public')
                 ->acceptedFileTypes($acceptedFileTypes)
@@ -166,7 +167,7 @@ class ImagePlugin implements RichContentPlugin
      */
     protected function handleImageAction(array $arguments, array $data, RichEditor $component): void
     {
-        $src = $this->resolveSourceUrl($data);
+        $src = $this->resolveSourceUrl($data, $component);
         if (blank($src)) {
             return;
         }
@@ -192,7 +193,7 @@ class ImagePlugin implements RichContentPlugin
     /**
      * @param  array<string, mixed>  $data
      */
-    protected function resolveSourceUrl(array $data): ?string
+    protected function resolveSourceUrl(array $data, RichEditor $component): ?string
     {
         /** @var string|null $path */
         $path = $data['src'] ?? null;
@@ -205,19 +206,20 @@ class ImagePlugin implements RichContentPlugin
             return $path;
         }
 
-        $disk = (string) config('rich-media-image.disk', 'public');
+        /** @var FilesystemAdapter $storage */
+        $storage = Storage::disk($component->getFileAttachmentsDiskName());
 
-        return Storage::disk($disk)->url($path);
+        return $storage->url($path);
     }
 
-    protected function getRelativePathFromUrl(?string $url): ?string
+    protected function getRelativePathFromUrl(?string $url, RichEditor $component): ?string
     {
         if (blank($url)) {
             return null;
         }
 
-        $disk = (string) config('rich-media-image.disk', 'public');
-        $storage = Storage::disk($disk);
+        /** @var FilesystemAdapter $storage */
+        $storage = Storage::disk($component->getFileAttachmentsDiskName());
         $baseUrl = $storage->url('');
 
         if (filled($baseUrl) && str_starts_with($url, $baseUrl)) {
